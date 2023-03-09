@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
-using System.Security.Authentication.ExtendedProtection.Configuration;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,17 +10,17 @@ namespace ZvukozapisnaKompaniq
     {
         static void Main(string[] args)
         {
-            AudioCompany company = new AudioCompany("TheCompany", "Sofia, j.k. Mladost", "Georgi Georgiev");
+            RecordingCompany company = new RecordingCompany("TheCompany", "Sofia, j.k. Mladost", "Georgi Georgiev");
 
-            Performer performer = new Performer("Pencho", "Penata");
+            Artist artist = new Artist("Pencho", "Penata");
 
-            Album album = new Album("TheFirstAlbum", "Rock", 2012);
+            Album album = new Album("TheFirstAlbum", "Rock", 2012, 135);
 
-            Song song1 = new Song("FirstSong", new Duration(23, 5, 0));
+            Song song1 = new Song("FirstSong", new Duration(0, 3, 20));
 
-            Song song2 = new Song("SecondSong", new Duration(12, 3, 0));
+            Song song2 = new Song("SecondSong", 0, 2, 53);
 
-            Song song3 = new Song("Thirdsong", new Duration(14, 3, 0));
+            Song song3 = new Song("Thirdsong", 1, 20, 32);
 
             album.AddSong(song1);
 
@@ -31,19 +28,16 @@ namespace ZvukozapisnaKompaniq
 
             album.AddSong(song3);
 
-            performer.AddAlbum(album);
+            artist.AddAlbum(album);
 
-            company.AddPerformer(performer);
+            company.AddArtist(artist);
+            company.AddArtist(artist);
 
-            Console.WriteLine(company.ToString());
-
-            album.RemoveSong(song2);
-
-            Console.WriteLine(company.ToString());
-
-            performer.RemoveAlbum(album);
 
             Console.WriteLine(company);
+
+
+
         }
     }
     
@@ -62,6 +56,23 @@ namespace ZvukozapisnaKompaniq
         public void AddArtist(Artist artist) => Artists.Add(artist);
         public void RemoveArtist(Artist artist) => Artists.Remove(artist);
 
+        public override string ToString()
+        {
+            string str = $"--[{Name}]--\nOwner:{Owner}\nAddress:{Address}";
+            foreach (var artist in Artists)
+            {
+                str+="\n\t"+artist;
+                foreach (var album in artist.Albums)
+                {
+                    str+="\n\t\t"+album;
+                    foreach (var song in album.Songs)
+                    {
+                        str+="\n\t\t\t"+ song;
+                    }
+                }
+            }
+            return str;
+        }
     }
 
     class Artist
@@ -78,7 +89,11 @@ namespace ZvukozapisnaKompaniq
         public void AddAlbum(Album album) => Albums.Add(album);
         public void RemoveAlbum(Album album) => Albums.Remove(album);
 
-
+        public override string ToString()
+        {
+            string r = $"{Nickname}({Name})";
+            return r;
+        }
     }
     class Album
     {
@@ -96,6 +111,11 @@ namespace ZvukozapisnaKompaniq
         public List<Song> Songs { get; private set; } = new List<Song>();
         public void AddSong(Song song) => Songs.Add(song);
         public void RemoveSong(Song song) => Songs.Remove(song);
+        public override string ToString()
+        {
+            string r = $"+{Name}+  {ReleaseYear}  ____  genre:{Genre}  ____  copies:{SoldCopies}";
+            return r;
+        }
     }
 
     class Song
@@ -109,6 +129,11 @@ namespace ZvukozapisnaKompaniq
 
         public string Name { get; private set; }
         public Duration Duration { get; private set; }
+        public override string ToString()
+        {
+            string r = $"{Name} ({Duration})";
+            return r;
+        }
     }
  
     class Duration
