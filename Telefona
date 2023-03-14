@@ -1,0 +1,63 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+namespace IzpitvaneKonkurentno14._3._23
+{
+public class Book //1
+{
+    public string Title { get; set; }
+    public double Price { get; set; }
+}
+
+public class BookList//2
+{
+    private List<Book> books = new List<Book>();
+
+    public async Task AddBooks()//3
+    {
+        await Task.Run(() =>
+        {
+            books.Add(new Book { Title = "L", Price =  });//dobavqte ime i cena za trite
+            books.Add(new Book { Title = "", Price =  });
+            books.Add(new Book { Title = "", Price =  });
+        });
+        Console.WriteLine($"Task id {Task.CurrentId} add books");//6
+    }
+
+    public async Task RemoveCheap()//4
+    {
+        await Task.Run(() =>
+        {
+            books.RemoveAll(b => b.Price < 25);
+        });
+        Console.WriteLine($"Task id {Task.CurrentId} remove cheap books ");//6
+    }
+
+    public async Task PrintBooks()//5
+    {
+        await Task.Run(() =>
+        {
+            Console.WriteLine($"Task id {Task.CurrentId} printing books");//6
+            foreach (var book in books)
+            {
+                Console.WriteLine($"{book.Title} - {book.Price}");
+            }
+        });
+    }
+}
+
+    public class Program
+    {
+        public static async Task Main(string[] args)
+        {
+            var bookList = new BookList();
+            var addTask = bookList.AddBooks();
+            var removeTask = bookList.RemoveCheap();
+            await Task.WhenAll(addTask, removeTask);
+
+            await bookList.PrintBooks();
+        }
+    }
+}
